@@ -23,18 +23,24 @@ jobs:
           sudo apt-get update
           sudo apt-get upgrade -y
 
-      - name: Install Docker and Docker Compose  # Adicionado o hífen faltante
+      - name: Install Docker and Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install --only-upgrade -y docker.io
           sudo systemctl start docker
           sudo systemctl enable docker
-          sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -oP '\"tag_name\": \"\K(.*)(?=\")')" -o /usr/local/bin/docker-compose
+          sudo apt-get install -y curl
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
+
+      - name: Verify Docker and Docker Compose Installation
+        run: |
+          docker --version
+          docker-compose --version
 
       - name: Build and Start Containers
         run: |
-          docker-compose up --build
+          docker-compose up -d --build
 
       - name: Stop and Remove Containers
         run: |
