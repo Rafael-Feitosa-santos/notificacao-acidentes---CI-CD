@@ -18,9 +18,13 @@ jobs:
           distribution: 'temurin'
           java-version: '22'
 
-      - name: Install Docker and Docker Compose
+      - name: Update and Upgrade Ubuntu Packages
         run: |
           sudo apt-get update
+          sudo apt-get upgrade -y
+
+      - name: Install Docker and Docker Compose
+        run: |
           sudo apt-get install -y docker.io
           sudo systemctl start docker
           sudo systemctl enable docker
