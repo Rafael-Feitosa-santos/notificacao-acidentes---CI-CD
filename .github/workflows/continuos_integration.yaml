@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, reopened]
     branches:
-      - feature/**
+      - feature/*
 
 jobs:
   tests:
@@ -19,12 +19,8 @@ jobs:
           distribution: 'temurin'
           java-version: '22'
 
-      - name: Install Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
-          sudo systemctl enable docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Build and Start Containers
         run: |
