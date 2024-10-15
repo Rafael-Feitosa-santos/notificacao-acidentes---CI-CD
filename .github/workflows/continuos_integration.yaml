@@ -34,7 +34,7 @@ jobs:
 
       - name: Build and Start Containers
         run: |
-          docker-compose up -d --build
+          docker-compose up --build
 
       - name: Stop and Remove Containers
         run: |
