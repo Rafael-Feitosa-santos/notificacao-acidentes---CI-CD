@@ -3,7 +3,7 @@ name: Continuous Delivery
 on:
   push:
     branches: 
-      - master
+      - feature/continuos_delivery
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: indexc.docker .io/${{ secrets.DOCKERHUB_USERNAME }}/notificacao-acidentes:${{ github.sha }}
+          tags: indexc.docker .io/${{ secrets.DOCKERHUB_USERNAME }}/notificacao-acidentes---CI-CD:${{ github.sha }}
           file: ./Dockerfile
 
   deploy:
@@ -44,4 +44,4 @@ jobs:
           app-name: 'fiap-notificacao-acidentes'
           slot-name: 'production'
           publish-profile: ${{ secrets.AZURE_PROFILE }}
-          images: "index.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/notificacao-acidentes:${{ github.sha }}'
+          images: 'index.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/notificacao-acidentes---CI-CD:${{ github.sha }}'
