@@ -42,7 +42,4 @@ jobs:
         run: |
           docker-compose up -d --build
 
-      - name: Stop and Remove Containers
-        run: |
-          docker-compose down
-          
+
