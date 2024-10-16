@@ -15,5 +15,6 @@ ENV TZ=America/Sao_Paulo
 RUN mkdir /opt/app
 COPY --from=build /opt/app/target/app.jar /opt/app/app.jar
 WORKDIR /opt/app
+ENV PROFILE=dev
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
