@@ -45,3 +45,4 @@ jobs:
       - name: Stop and Remove Containers
         run: |
           docker-compose down
+          
