@@ -1,46 +1,51 @@
+name: Continuous Delivery
+
 on:
-    push:
-        branches: "feature/main"
- 
-env:
-  IMAGE_NAME: notificacao-acidentes
-  AZURE_WEBAPP_NAME: notificacao-acidentes
- 
+  push:
+    branches: 
+      - feature/continuos_delivery
+
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:             
-        -  
-            name: Git Checkout 
-            uses: actions/checkout@v4 
- 
-        -   name: Setup Java SDK 
-            uses: actions/setup-java@v4 
-            with: 
-              distribution: 'temurin'  
-              java-version: '22'
-        -
-            name: Login to Docker Hub
-            uses: docker/login-action@v3
-            with:
-                username: ${{ secrets.DOCKERHUB_USERNAME }}
-                password: ${{ secrets.DOCKERHUB_TOKEN }}
-        - 
-            name: Build 
-            uses: docker/build-push-action@v6 
-            with: 
-                push: true
-                tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-    deploy:
-        runs-on: ubuntu-latest
-        needs: build
-        steps:
-        - 
-            name: Deploy to Azure Web App
-            id: deploy-to-webapp
-            uses: azure/webapps-deploy@v2
-            with:
-              app-name: ${{ env.AZURE_WEBAPP_NAME }}
-              publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-              images: 'ghcr.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest'
-              
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with: 
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Print Docker version and info  # Novo passo para checar o Docker
+        run: |
+          docker --version
+          docker info
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: "${{ secrets.DOCKERHUB_USERNAME }}/notificacao-acidentes:${{ github.sha }}"
+          file: ./Dockerfile
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'fiap-notificacao-acidentes'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AZURE_PROFILE }}
+          images: "${{ secrets.DOCKERHUB_USERNAME }}/notificacao-acidentes:${{ github.sha }}"
