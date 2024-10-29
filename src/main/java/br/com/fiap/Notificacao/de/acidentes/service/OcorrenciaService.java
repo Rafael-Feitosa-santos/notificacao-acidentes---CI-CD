@@ -52,7 +52,7 @@ public class OcorrenciaService {
             ocorrenciaExistente.setGravidade(novaOcorrencia.getGravidade());
             ocorrenciaExistente.setEndereco(novaOcorrencia.getEndereco());
             ocorrenciaExistente.setVitima(novaOcorrencia.getVitima());
-            ocorrenciaExistente.setStatus(Status.EM_ANDAMENTO);
+            ocorrenciaExistente.setStatus(novaOcorrencia.getStatus());
 
             return ocorrenciaRepository.save(ocorrenciaExistente);
         } else {

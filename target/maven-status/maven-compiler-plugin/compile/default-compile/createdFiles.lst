@@ -1,0 +1,4 @@
+br\com\fiap\Notificacao\de\acidentes\config\security\SecurityConfig.class
+br\com\fiap\Notificacao\de\acidentes\NotificacaoDeAcidentesApplication.class
+br\com\fiap\Notificacao\de\acidentes\config\security\VerificarToken.class
+br\com\fiap\Notificacao\de\acidentes\advice\ApplicationExceptionHandler.class
